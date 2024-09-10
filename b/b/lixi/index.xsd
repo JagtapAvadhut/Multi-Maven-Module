@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- Company root element -->
+    <xs:element name="company">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Company has multiple departments -->
+                <xs:element name="department" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string"/>
+
+                            <!-- Department has multiple employees -->
+                            <xs:element name="employee" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" type="xs:string"/>
+                                        <xs:element name="age" type="xs:int"/>
+                                        <xs:element name="email" type="xs:string" minOccurs="0"/>
+
+                                        <!-- Nested address structure -->
+                                        <xs:element name="address">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="street" type="xs:string"/>
+                                                    <xs:element name="city" type="xs:string"/>
+                                                    <xs:element name="state" type="xs:string"/>
+                                                    <xs:element name="zipCode" type="xs:string"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
