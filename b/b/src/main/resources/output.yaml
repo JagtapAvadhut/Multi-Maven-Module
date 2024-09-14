@@ -1,0 +1,27 @@
+definitions: {}
+info:
+  description: API for managing loan applications.
+  title: Loan Application API
+  version: 1.0.0
+parameters: {}
+paths:
+  /loanApplication:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplicationType'
+        description: Loan Application object that needs to be submitted
+        required: true
+      responses:
+        '201':
+          content: {}
+          description: Loan application created successfully
+        '400':
+          content: {}
+          description: Invalid input
+      summary: Submit a new loan application
+      x-codegen-request-body-name: LoanApplication
+responses: {}
+swagger: '2.0'

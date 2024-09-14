@@ -8,7 +8,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class BApplication {
-
+String string="D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\swagger.yaml";
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(BApplication.class, args);

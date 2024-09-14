@@ -1,43 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.example.com/finance"
+           xmlns="http://www.example.com/finance"
+           elementFormDefault="qualified">
 
-    <!-- Company root element -->
-    <xs:element name="company">
-        <xs:complexType>
-            <xs:sequence>
-                <!-- Company has multiple departments -->
-                <xs:element name="department" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="name" type="xs:string"/>
+    <!-- Enumeration of loan types -->
+    <xs:simpleType name="LoanTypeEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="HomeLoan"/>
+            <xs:enumeration value="CarLoan"/>
+            <xs:enumeration value="PersonalLoan"/>
+            <xs:enumeration value="EducationLoan"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-                            <!-- Department has multiple employees -->
-                            <xs:element name="employee" maxOccurs="unbounded">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="name" type="xs:string"/>
-                                        <xs:element name="age" type="xs:int"/>
-                                        <xs:element name="email" type="xs:string" minOccurs="0"/>
+    <!-- Enumeration of currency types -->
+    <xs:simpleType name="CurrencyEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="USD"/>
+            <xs:enumeration value="EUR"/>
+            <xs:enumeration value="INR"/>
+            <xs:enumeration value="AUD"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-                                        <!-- Nested address structure -->
-                                        <xs:element name="address">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element name="street" type="xs:string"/>
-                                                    <xs:element name="city" type="xs:string"/>
-                                                    <xs:element name="state" type="xs:string"/>
-                                                    <xs:element name="zipCode" type="xs:string"/>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <!-- Complex type defining Address -->
+    <xs:complexType name="AddressType">
+        <xs:sequence>
+            <xs:element name="Street" type="xs:string"/>
+            <xs:element name="City" type="xs:string"/>
+            <xs:element name="State" type="xs:string"/>
+            <xs:element name="PostalCode" type="xs:string"/>
+            <xs:element name="Country" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Complex type defining Loan -->
+    <xs:complexType name="LoanType">
+        <xs:sequence>
+            <xs:element name="LoanID" type="xs:string"/>
+            <xs:element name="LoanAmount" type="xs:decimal"/>
+            <xs:element name="LoanType" type="LoanTypeEnum"/>
+            <xs:element name="Currency" type="CurrencyEnum"/>
+            <xs:element name="InterestRate" type="xs:decimal"/>
+            <xs:element name="LoanTerm" type="xs:int"/>
+            <xs:element name="StartDate" type="xs:date"/>
+            <xs:element name="EndDate" type="xs:date"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Complex type defining Person -->
+    <xs:complexType name="PersonType">
+        <xs:sequence>
+            <xs:element name="FirstName" type="xs:string"/>
+            <xs:element name="LastName" type="xs:string"/>
+            <xs:element name="DateOfBirth" type="xs:date"/>
+            <xs:element name="Gender" type="xs:string"/>
+            <xs:element name="Address" type="AddressType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Complex type defining the Borrower -->
+    <xs:complexType name="BorrowerType">
+        <xs:sequence>
+            <xs:element name="BorrowerID" type="xs:string"/>
+            <xs:element name="Person" type="PersonType"/>
+            <xs:element name="EmploymentStatus" type="xs:string"/>
+            <xs:element name="AnnualIncome" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Complex type defining the Lender -->
+    <xs:complexType name="LenderType">
+        <xs:sequence>
+            <xs:element name="LenderID" type="xs:string"/>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Branch" type="xs:string"/>
+            <xs:element name="Address" type="AddressType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Complex type defining LoanApplication -->
+    <xs:complexType name="LoanApplicationType">
+        <xs:sequence>
+            <xs:element name="ApplicationID" type="xs:string"/>
+            <xs:element name="Borrower" type="BorrowerType"/>
+            <xs:element name="Lender" type="LenderType"/>
+            <xs:element name="LoanDetails" type="LoanType"/>
+            <xs:element name="ApplicationDate" type="xs:date"/>
+            <xs:element name="Status" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Root element LoanApplication -->
+    <xs:element name="LoanApplication" type="LoanApplicationType"/>
+
+    <!-- Additional Types and References for Future Expansion -->
+
+    <!-- Complex type defining CreditScore -->
+    <xs:complexType name="CreditScoreType">
+        <xs:sequence>
+            <xs:element name="Score" type="xs:int"/>
+            <xs:element name="ReportDate" type="xs:date"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- LoanApplication can reference CreditScore -->
+    <xs:complexType name="ExtendedLoanApplicationType">
+        <xs:complexContent>
+            <xs:extension base="LoanApplicationType">
+                <xs:sequence>
+                    <xs:element name="CreditScore" type="CreditScoreType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
 </xs:schema>

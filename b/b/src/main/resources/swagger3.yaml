@@ -1,0 +1,143 @@
+openapi: 3.0.1
+info:
+  title: Loan Application API
+  description: API for managing loan applications.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /loanApplication:
+    post:
+      summary: Submit a new loan application
+      requestBody:
+        description: Loan Application object that needs to be submitted
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanApplicationType"
+        required: true
+      responses:
+        "201":
+          description: Loan application created successfully
+          content: {}
+        "400":
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: LoanApplication
+components:
+  schemas:
+    LoanApplicationType:
+      type: object
+      properties:
+        ApplicationID:
+          type: string
+        Borrower:
+          $ref: "#/components/schemas/BorrowerType"
+        Lender:
+          $ref: "#/components/schemas/LenderType"
+        LoanDetails:
+          $ref: "#/components/schemas/LoanType"
+        ApplicationDate:
+          type: string
+          format: date
+        Status:
+          type: string
+    BorrowerType:
+      type: object
+      properties:
+        BorrowerID:
+          type: string
+        Person:
+          $ref: "#/components/schemas/PersonType"
+        EmploymentStatus:
+          type: string
+        AnnualIncome:
+          type: number
+          format: decimal
+    PersonType:
+      type: object
+      properties:
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        DateOfBirth:
+          type: string
+          format: date
+        Gender:
+          type: string
+        Address:
+          $ref: "#/components/schemas/AddressType"
+    AddressType:
+      type: object
+      properties:
+        Street:
+          type: string
+        City:
+          type: string
+        State:
+          type: string
+        PostalCode:
+          type: string
+        Country:
+          type: string
+    LenderType:
+      type: object
+      properties:
+        LenderID:
+          type: string
+        Name:
+          type: string
+        Branch:
+          type: string
+        Address:
+          $ref: "#/components/schemas/AddressType"
+    LoanType:
+      type: object
+      properties:
+        LoanID:
+          type: string
+        LoanAmount:
+          type: number
+          format: decimal
+        LoanType:
+          type: string
+          enum:
+            - HomeLoan
+            - CarLoan
+            - PersonalLoan
+            - EducationLoan
+        Currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+            - INR
+            - AUD
+        InterestRate:
+          type: number
+          format: decimal
+        LoanTerm:
+          type: integer
+        StartDate:
+          type: string
+          format: date
+        EndDate:
+          type: string
+          format: date
+    CreditScoreType:
+      type: object
+      properties:
+        Score:
+          type: integer
+        ReportDate:
+          type: string
+          format: date
+    ExtendedLoanApplicationType:
+      allOf:
+        - $ref: "#/components/schemas/LoanApplicationType"
+        - type: object
+          properties:
+            CreditScore:
+              $ref: "#/components/schemas/CreditScoreType"
+x-original-swagger-version: "2.0"
