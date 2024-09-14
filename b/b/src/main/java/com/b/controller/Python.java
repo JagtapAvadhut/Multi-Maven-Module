@@ -22,7 +22,7 @@ public class Python {
             // Command to run the Python script
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "python",
-                    "D:\\Avadhoot\\Maven-Module\\b\\b\\lixi\\demo.py",
+                    "D:\\Avadhoot\\Maven-Module\\b\\b\\lixi\\s2To3.py",
                     "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\swagger3.yaml",
                     "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\output1.yaml"
             );
@@ -48,7 +48,7 @@ public class Python {
 
     public static String runPythonScript() {
         StringBuilder result = new StringBuilder();
-        ProcessBuilder processBuilder = new ProcessBuilder("python", "D:\\Avadhoot\\Maven-Module\\b\\b\\lixi\\demo2.py");
+        ProcessBuilder processBuilder = new ProcessBuilder("python", "D:\\Avadhoot\\Maven-Module\\b\\b\\lixi\\s3ToFormat3.py.py");
 
         try {
             Process process = processBuilder.start();
@@ -142,4 +142,5 @@ public class Python {
             }
         }
     }
+
 }

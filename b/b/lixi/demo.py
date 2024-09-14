@@ -1,80 +1,53 @@
 import yaml
-import copy
 import re
+import sys
 
-def convert_openapi_to_swagger(openapi):
-    swagger = {
-        "swagger": "2.0",
-        "info": openapi.get("info", {}),
-        "host": openapi.get("servers", [{}])[0].get("url", "").replace("https://", "").replace("http://", ""),
-        "basePath": openapi.get("servers", [{}])[0].get("url", "").split("/", 1)[1] if "/" in openapi.get("servers", [{}])[0].get("url", "") else "",
-        "schemes": ["https" if "https" in openapi.get("servers", [{}])[0].get("url", "") else "http"],
-        "paths": copy.deepcopy(openapi.get("paths", {})),
-        "definitions": {}
-    }
+def update_refs(obj):
+    """
+    Recursively update $ref paths in the Swagger document to the correct format.
+    """
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            if key == "$ref" and isinstance(value, str):
+                # Update incorrect $ref paths to the correct format
+                obj[key] = re.sub(r"#/definitions/", "#/components/schemas/", value)
+            else:
+                update_refs(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            update_refs(item)
 
-    # Function to process components and convert OpenAPI 3.x schemas to Swagger 2.x definitions
-    def process_components(components):
-        for schema_name, schema in components.get("schemas", {}).items():
-            swagger["definitions"][schema_name] = schema
-        return swagger
-
-    # Convert OpenAPI components (schemas) to Swagger definitions
-    swagger = process_components(openapi.get("components", {}))
-
-    # Convert `$ref` paths to Swagger's `#/definitions/` format
-    def update_refs(obj):
-        if isinstance(obj, dict):
-            for key, value in obj.items():
-                if key == "$ref" and isinstance(value, str):
-                    # Convert reference paths from components/schemas to definitions
-                    obj[key] = re.sub(r"#/components/schemas/", "#/definitions/", value)
-                else:
-                    update_refs(value)
-        elif isinstance(obj, list):
-            for item in obj:
-                update_refs(item)
-
-    # Update `$ref` paths in the paths and definitions
-    update_refs(swagger["paths"])
-    update_refs(swagger["definitions"])
-
-    # Convert requestBody to parameters for Swagger 2.0 format
-    for path, methods in swagger["paths"].items():
-        for method, details in methods.items():
-            if "requestBody" in details:
-                content = details["requestBody"].get("content", {})
-                if "application/json" in content:
-                    details["parameters"] = [{
-                        "name": "body",
-                        "in": "body",
-                        "required": details.get("requestBody", {}).get("required", False),
-                        "schema": content["application/json"].get("schema", {})
-                    }]
-                del details["requestBody"]
-
+def correct_swagger_refs(swagger):
+    """
+    Correct $ref paths in the Swagger document.
+    """
+    # Update $ref paths in 'paths' and 'components/schemas'
+    if "paths" in swagger:
+        update_refs(swagger["paths"])
+    if "components" in swagger:
+        update_refs(swagger["components"])
     return swagger
 
 def main():
-    input_file = 'D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\swagger3.yaml'
-    output_file = 'D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\output1.yaml'
-
+    """
+    Main function to read, process, and output the Swagger YAML file.
+    """
     try:
-        with open(input_file, 'r') as f:
-            openapi_3 = yaml.safe_load(f)
+        # Read YAML from standard input
+        swagger_3 = yaml.safe_load(sys.stdin)
 
-        swagger_2 = convert_openapi_to_swagger(openapi_3)
+        # Correct the Swagger 3.0 file's $ref paths
+        corrected_swagger_3 = correct_swagger_refs(swagger_3)
 
-        with open(output_file, 'w') as f:
-            yaml.dump(swagger_2, f, sort_keys=False)
+        # Output the corrected YAML to standard output
+        yaml.dump(corrected_swagger_3, sys.stdout, sort_keys=False)
 
-        print(f'Conversion complete. Swagger 2.0 YAML saved to {output_file}')
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
     except yaml.YAMLError as e:
-        print(f"YAML Error: {e}")
+        print(f"YAML Error: {e}", file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
-        print(f"Unexpected Error: {e}")
+        print(f"Unexpected Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
