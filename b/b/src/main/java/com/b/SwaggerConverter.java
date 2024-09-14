@@ -18,13 +18,13 @@ public class SwaggerConverter {
     private static void swaggerV2ToV3Convert() {
         try {
 
-            String swagger3 = "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\swagger2.yaml";
+            String swagger3 = "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\output1.yaml";
             Yaml yaml = new Yaml();
             Map<Object, Object> swaggerYaml = yaml.load(new FileInputStream(new File(swagger3)));
 
             Map<Object, Object> swagger2Yaml = SwaggerVersionConverter.converterV2ToV3(swaggerYaml);
 
-            String outPut = "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\output.yaml";
+            String outPut = "D:\\Avadhoot\\Maven-Module\\b\\b\\src\\main\\resources\\output2.yaml";
             FileWriter fileWriter = new FileWriter(new File(outPut));
             fileWriter.write(new Yaml().dump(swagger2Yaml));
             fileWriter.close();
