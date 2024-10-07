@@ -9,10 +9,10 @@ import java.util.Map;
 public class Python {
 
     public static void main(String[] args) {
-//        SwaggerService swaggerService=new SwaggerService();
-//        swaggerService.processSwaggerFile();
-//        Python.runPythonScript();
-//        Python.runSpringCode();
+        SwaggerService swaggerService=new SwaggerService();
+        swaggerService.processSwaggerFile();
+        Python.runPythonScript();
+        Python.runSpringCode();
         Python.swagger3toSwagger2();
 
     }
